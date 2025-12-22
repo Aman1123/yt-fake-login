@@ -35,6 +35,26 @@
     window.postMessage(
       { type: "LOGIN_SUCCESS", user },
       "*"
+      <script>
+  function notifyExtension(user) {
+    const EXTENSION_ID = "PASTE_EXTENSION_ID_HERE";
+
+    chrome.runtime.sendMessage(
+      EXTENSION_ID,
+      {
+        type: "LOGIN_SUCCESS",
+        user: {
+          email: user.email,
+          name: user.displayName,
+          uid: user.uid
+        }
+      },
+      () => {
+        window.close(); // auto close login tab
+      }
+    );
+  }
+</script>
     );
 
     alert("Login successful. You can close this tab.");
