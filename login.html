@@ -48,8 +48,10 @@
       );
 
     } catch (err) {
-      console.error("Login failed", err);
-      alert("Login failed. Please try again.");
+     
+  console.error("Firebase login error:", err);
+  alert(err.message);
+}
     }
   });
 </script>
