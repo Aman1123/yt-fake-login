@@ -14,7 +14,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-  // 🔹 Firebase config
   firebase.initializeApp({
     apiKey: "AIzaSyDMQLzZD8978J-ENipP4wmZhywn9ZxHD7w",
     authDomain: "yt-fake-detector.firebaseapp.com",
@@ -22,14 +21,16 @@
   });
 
   const auth = firebase.auth();
-
-  // 🔹 CHANGE THIS TO YOUR REAL EXTENSION ID
   const EXTENSION_ID = "neenbpclgbocljpjenbfaggccdnhlkmo";
 
   document.getElementById("login").addEventListener("click", async () => {
+    console.log("Login button clicked");
+
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
+
+      console.log("Firebase login success");
 
       const user = {
         uid: result.user.uid,
@@ -37,21 +38,15 @@
         name: result.user.displayName
       };
 
-      // 🔹 Send login data to extension
       chrome.runtime.sendMessage(
         EXTENSION_ID,
         { type: "LOGIN_SUCCESS", user },
-        () => {
-          // 🔹 Auto-close login tab
-          window.close();
-        }
+        () => window.close()
       );
 
     } catch (err) {
-     
-  console.error("Firebase login error:", err);
-  alert(err.message);
-}
+      console.error("Firebase login error:", err);
+      alert(err.message);
     }
   });
 </script>
