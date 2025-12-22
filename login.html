@@ -9,10 +9,12 @@
 <h2>Login to Fake Account Detector</h2>
 <button id="login">Login with Google</button>
 
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
+  // 🔹 Firebase config
   firebase.initializeApp({
     apiKey: "AIzaSyDMQLzZD8978J-ENipP4wmZhywn9ZxHD7w",
     authDomain: "yt-fake-detector.firebaseapp.com",
@@ -21,44 +23,35 @@
 
   const auth = firebase.auth();
 
-  document.getElementById("login").onclick = async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await auth.signInWithPopup(provider);
+  // 🔹 CHANGE THIS TO YOUR REAL EXTENSION ID
+  const EXTENSION_ID = "PASTE_EXTENSION_ID_HERE";
 
-    const user = {
-      uid: result.user.uid,
-      email: result.user.email,
-      name: result.user.displayName
-    };
+  document.getElementById("login").addEventListener("click", async () => {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const result = await auth.signInWithPopup(provider);
 
-    // Send login back to extension
-    window.postMessage(
-      { type: "LOGIN_SUCCESS", user },
-      "*"
-      <script>
-  function notifyExtension(user) {
-    const EXTENSION_ID = "PASTE_EXTENSION_ID_HERE";
+      const user = {
+        uid: result.user.uid,
+        email: result.user.email,
+        name: result.user.displayName
+      };
 
-    chrome.runtime.sendMessage(
-      EXTENSION_ID,
-      {
-        type: "LOGIN_SUCCESS",
-        user: {
-          email: user.email,
-          name: user.displayName,
-          uid: user.uid
+      // 🔹 Send login data to extension
+      chrome.runtime.sendMessage(
+        EXTENSION_ID,
+        { type: "LOGIN_SUCCESS", user },
+        () => {
+          // 🔹 Auto-close login tab
+          window.close();
         }
-      },
-      () => {
-        window.close(); // auto close login tab
-      }
-    );
-  }
-</script>
-    );
+      );
 
-    alert("Login successful. You can close this tab.");
-  };
+    } catch (err) {
+      console.error("Login failed", err);
+      alert("Login failed. Please try again.");
+    }
+  });
 </script>
 
 </body>
