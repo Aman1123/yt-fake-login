@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<body>
+
+<h2>Login to Fake Account Detector</h2>
+<button id="login">Login with Google</button>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyDMQLzZD8978J-ENipP4wmZhywn9ZxHD7w",
+    authDomain: "yt-fake-detector.firebaseapp.com",
+    projectId: "yt-fake-detector"
+  });
+
+  const auth = firebase.auth();
+
+  document.getElementById("login").onclick = async () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await auth.signInWithPopup(provider);
+
+    const user = {
+      uid: result.user.uid,
+      email: result.user.email,
+      name: result.user.displayName
+    };
+
+    // Send login back to extension
+    window.postMessage(
+      { type: "LOGIN_SUCCESS", user },
+      "*"
+    );
+
+    alert("Login successful. You can close this tab.");
+  };
+</script>
+
+</body>
+</html>
